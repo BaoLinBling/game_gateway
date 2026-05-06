@@ -1,0 +1,47 @@
+#include <muduo/net/EventLoop.h>
+#include <muduo/net/TcpServer.h>
+#include <muduo/net/Buffer.h>
+#include <muduo/net/InetAddress.h>
+#include "middleware/monitor/prometheus.h"
+#include <iostream>
+#include <string>
+
+using namespace muduo::net;
+using namespace muduo;
+
+void onGatewayMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp) {
+    conn->send(buf->retrieveAllAsString());
+}
+
+void onMetricsRequest(const TcpConnectionPtr& conn, Buffer* buf, Timestamp) {
+    Prometheus::getInstance().incRequests();
+    std::string metrics_data = Prometheus::getInstance().metrics();
+
+    std::string resp =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Content-Length: " + std::to_string(metrics_data.size()) + "\r\n"
+        "\r\n" + metrics_data;
+
+    conn->send(resp);
+}
+
+int main() {
+    EventLoop loop;
+
+    // 8080 网关
+    TcpServer gateway_server(&loop, InetAddress(8080), "gateway");
+    gateway_server.setMessageCallback(onGatewayMessage);
+    gateway_server.start();
+
+    // 9090 监控
+    TcpServer metrics_server(&loop, InetAddress(9090), "metrics");
+    metrics_server.setMessageCallback(onMetricsRequest);
+    metrics_server.start();
+
+    std::cout << "[OK] 8080 网关已启动" << std::endl;
+    std::cout << "[OK] 9090 监控已启动" << std::endl;
+
+    loop.loop();
+    return 0;
+}

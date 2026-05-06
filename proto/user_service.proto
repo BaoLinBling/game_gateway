@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package user;
+
+// =========================
+// UserService 定义
+// =========================
+service UserService {
+  // 登录 RPC
+  rpc Login (LoginRequest) returns (LoginResponse);
+}
+
+// =========================
+// 登录请求
+// =========================
+message LoginRequest {
+  string phone = 1;   // 手机号
+  string pwd   = 2;   // 密码（明文或加密后）
+}
+
+// =========================
+// 登录响应
+// =========================
+message LoginResponse {
+  bool ok        = 1;  // 是否成功
+  uint64 user_id = 2;  // 用户ID
+  string jwt     = 3;  // 登录token（实际用作session token）
+  int32 err      = 4;  // 错误码（参考 error_code.h）
+}

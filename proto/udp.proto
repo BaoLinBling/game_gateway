@@ -1,0 +1,10 @@
+syntax = "proto3";
+package udp;
+
+message UdpMessage {
+    string uid = 1;
+    uint32 seq = 2;
+    uint32 room_id = 3;
+    string content = 4;
+    bytes payload = 5;
+}

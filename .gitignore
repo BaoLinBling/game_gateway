@@ -1,0 +1,26 @@
+# 日志
+*.log
+logs/
+gateway_fallback.log
+
+# 第三方依赖
+third_party/
+
+# Docker 中间件数据
+deploy/mysql/
+deploy/redis/
+deploy/zookeeper/
+deploy/kafka/
+deploy/prometheus/
+deploy/grafana/
+
+# 编译产物
+build/
+bin/lib/
+*.o
+*.so
+*.a
+
+# IDE
+.vscode/
+.idea/

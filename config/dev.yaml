@@ -1,0 +1,94 @@
+# =========================
+# JWT 配置
+# =========================
+jwt:
+  secret: "dev_secret_key_change_me"
+
+# =========================
+# 网络配置
+# =========================
+network:
+  port: 9000
+  byte_order: "big_endian"   # length字段统一使用网络字节序
+
+# =========================
+# MySQL 配置
+# =========================
+#mysql:
+#  host: "127.0.0.1"
+#  port: 3306
+#  user: "root"
+#  password: "root"
+#  db: "game"
+#  pool_size: 100
+mysql:
+  host: 127.0.0.1
+  port: 13306    # 不是3306
+  user: root
+  password: secret
+  db: game_gateway
+  pool_size: 8
+
+# =========================
+# Redis 配置
+# =========================
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  session_ttl: 3600   # 秒（1小时）
+
+# =========================
+# Kafka 配置
+# =========================
+kafka:
+  bootstrap_servers: "127.0.0.1:9092"
+  topic: "game_events"
+
+# =========================
+# brpc 服务端点（登录服务）
+# =========================
+brpc:
+  endpoint: "127.0.0.1:8000"
+
+# =========================
+# 性能目标（压测/调优）
+# =========================
+perf:
+  target_qps: 10000
+
+
+feature:
+  zerocopy: true
+  lockfree_queue: true
+  rate_limit: true
+  circuit_breaker: true
+
+rate_limit:
+  capacity: 1000
+  refill_per_sec: 500
+
+circuit_breaker:
+  error_threshold: 0.05
+  window_size: 100
+
+
+
+gateway:
+  zerocopy: true
+  ratelimit: true
+  circuitbreaker: true
+
+limiter:
+  qps: 5000
+  burst: 10000
+
+breaker:
+  threshold: 0.05
+  window_ms: 10000
+  open_time_ms: 5000
+
+rate_limit: 1000
+# 断路器配置（热更新）
+breaker_threshold: 5
+breaker_window: 10000
+breaker_open: 5000
